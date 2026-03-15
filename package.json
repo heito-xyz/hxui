@@ -1,6 +1,6 @@
 {
   "name": "@heito/hxui",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Vue components for heito.xyz projects",
   "license": "ISC",
   "main": "./dist/index.umd.js",
@@ -15,7 +15,7 @@
     },
     "./styles": "./dist/style.css",
     "./nuxt": {
-      "import": "./nuxt.js"
+      "import": "./dist/nuxt.js"
     }
   },
   "files": [
@@ -49,10 +49,10 @@
     "nuxt4"
   ],
   "dependencies": {
+    "@nuxt/kit": "^4.4.2",
     "vue": "^3.5.18"
   },
   "devDependencies": {
-    "@nuxt/kit": "^4.4.2",
     "@types/node": "^24.3.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "lucide-vue-next": "^0.577.0",
@@ -60,6 +60,7 @@
     "typescript": "^5.9.2",
     "vite": "^7.1.2",
     "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-static-copy": "^3.3.0",
     "vue-tsc": "^3.0.5"
   },
   "publishConfig": {

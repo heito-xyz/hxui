@@ -33,7 +33,7 @@ withDefaults(defineProps<{
 
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 
 .ui-checkbox {
     cursor: pointer;

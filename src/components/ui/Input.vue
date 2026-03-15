@@ -65,7 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 
 input {
     padding: 0;

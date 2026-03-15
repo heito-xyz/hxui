@@ -1,7 +1,8 @@
 import { defineNuxtModule, addComponent } from '@nuxt/kit';
 
 // * Components
-import * as components from '@heito/hxui';
+import * as components from './components';
+
 
 export default defineNuxtModule({
     meta: {

@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<{
 
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 
 button {
     display: flex;

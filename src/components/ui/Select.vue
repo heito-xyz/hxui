@@ -110,7 +110,7 @@ function onClick(event: MouseEvent, toggle: (event: MouseEvent) => void) {
 
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 
 .show-select-options-enter-active,
 .show-select-options-leave-active {
@@ -130,10 +130,10 @@ function onClick(event: MouseEvent, toggle: (event: MouseEvent) => void) {
 ::v-deep(.ui-button) {
     font-size: 14px;
     justify-content: space-between;
-}
 
-::v-deep(.ui-button) span {
-    opacity: 0.7;
+    span {
+        opacity: 0.7;
+    }
 }
 
 .ui-select.selected ::v-deep(.ui-button) span {
