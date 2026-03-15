@@ -1,7 +1,7 @@
 {
-  "name": "@heito/vue-components",
+  "name": "@heito/hxui",
   "version": "1.0.11",
-  "description": "Vue components for heito.xyz",
+  "description": "Vue components for heito.xyz projects",
   "license": "ISC",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.es.js",
