@@ -13,8 +13,8 @@
             @before-enter="onEnter"
             @after-leave="onLeave"
         >
-            <div v-if="isOpened"
-                :class="['ui-popover', ...popoverSide]"
+            <div v-show="isOpened"
+                :class="['ui-popover', ...popoverSide, { fixed }]"
                 role="dialog"
                 aria-modal="true"
                 :style="style"
@@ -63,12 +63,14 @@ const $emit = defineEmits<{
 
 const props = withDefaults(defineProps<{
     side?: Side | [Side, Align];
+    fixed?: boolean;
     transition?: TransitionOptions;
     collisionPadding?: number | [number, number];
     closeOnClickOutside?: boolean;
     style?: HTMLAttributes['style'];
 }>(), {
     side: () => 'bottom',
+    fixed: false,
     transition: () => 'show',
     collisionPadding: () => 4,
     closeOnClickOutside: true,
@@ -218,17 +220,19 @@ onUnmounted(() => {
 }
 
 .ui-popover {
-    width: 256px;
+    max-width: 215px;
+    min-width: 128px;
     position: fixed;
     top: 0;
     left: 0;
-    padding: 8px;
-    border-radius: 0.5rem;
-    border: 1px solid var(--background-t);
-    background-color: var(--background-secondary);
+    padding: 4px;
+    color: var(--hx-text-primary);
+    border-radius: var(--hx-border-radius);
+    border: 1px solid var(--hx-background-transparent);
+    background-color: var(--hx-background-secondary);
     transition: opacity .2s;
     box-sizing: border-box;
-    z-index: 101;
+    z-index: 1010;
 
     &.top { --v: calc(var(--target-y) - 100% - var(--gap-v)); }
     &.bottom { --v: calc(var(--target-y) + var(--target-height) + var(--gap-v)); }

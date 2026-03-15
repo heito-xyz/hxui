@@ -1,38 +1,22 @@
 <template>
     <label :class="['ui-input', type]">
-        <div class="before" v-if="$slots?.before">
-            <slot name="before"/>
-        </div>
-
-        <div class="number-btn l" v-if="type === 'number'"
-            @click="value = Number(value) - 1"
-        >-</div>
-
         <input :type="type" v-model="value"
             :placeholder="placeholder"
             :min="min"
             :max="max"
             :maxlength="max"
 
-            @input="$emit('input', $event as InputEvent)"
+            @input="$emit('input', $event as any as InputEvent)"
             @change="$emit('change', $event as InputEvent)"
             @focus="$emit('focus', $event)"
             @blur="$emit('blur', $event)"
         >
-
-        <div class="number-btn r" v-if="type === 'number'"
-            @click="value = Number(value) + 1"
-        >+</div>
-
-        <div class="after" v-if="$slots?.after">
-            <slot name="after"/>
-        </div>
     </label>
 </template>
 
 <script lang="ts" setup>
 
-type Type = 'text' | 'number';
+type Type = 'text' | 'password';
 
 type InputEvent = Event & { target: HTMLInputElement };
 
@@ -54,15 +38,8 @@ const $slots = defineSlots<{
 
 const value = defineModel('value', {
     set(v: string | number) {
-        const { type, min, max } = props;
-
-        if (type !== 'number' || typeof v !== 'number') return v;
-
-        if (min && v < min) return min;
-        if (max && v > max) return max;
-
         return v;
-    },
+    }
 });
 
 
@@ -93,7 +70,7 @@ const props = withDefaults(defineProps<Props>(), {
 input {
     padding: 0;
     width: 100%;
-    color: var(--text-primary);
+    color: var(--hx-text-primary);
     font-size: 14px;
     border: none;
     background-color: transparent;
@@ -113,20 +90,22 @@ input[type='number'] {
 .ui-input {
     display: flex;
     padding: 6px 10px;
-    color: var(--text-primary);
+    min-height: 32px;
+    color: var(--hx-text-primary);
     font-size: 14px;
-    border-radius: 0.5rem;
-    border: 1px solid var(--background-t);
+    border-radius: var(--hx-border-radius);
+    border: 1px solid var(--hx-background-transparent);
     align-items: center;
     justify-self: start;
-    background-color: var(--background-secondary);
+    background-color: var(--hx-background-secondary);
     transition: box-shadow .2s;
+    box-sizing: border-box;
     user-select: none;
     overflow: hidden;
 }
 
 .ui-input:has(> input:focus) {
-    box-shadow: 0 0 0 3px var(--background-secondary);
+    box-shadow: 0 0 0 3px var(--hx-background-secondary);
 }
 
 .before {
@@ -151,13 +130,13 @@ input[type='number'] {
     cursor: pointer;
     padding: 6px 10px;
     transition: filter .2s;
-    background-color: var(--background-secondary);
+    background-color: var(--hx-background-secondary);
 }
 .number-btn.l {
-    border-right: 1px solid var(--background-t);
+    border-right: 1px solid var(--hx-background-transparent);
 }
 .number-btn.r {
-    border-left: 1px solid var(--background-t);
+    border-left: 1px solid var(--hx-background-transparent);
 }
 
 .number-btn:hover {

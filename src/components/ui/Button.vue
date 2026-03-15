@@ -1,66 +1,30 @@
 <template>
-    <button :class="['ui-button', variant, { disabled }]"
-        :disabled="Boolean(disabled || props?.disabled === 'all')"
+    <button :class="['ui-button', variant]"
+        :disabled="disabled"
 
         @click="$emit('click', $event)"
     >
-        <button class="before" v-if="$slots?.before"
-            :disabled="before?.disabled || disabled === 'all'"
-
-            @click.prevent.stop="$emit('clickBefore', $event)"
-        >
-            <slot name="before"/>
-        </button>
-
-        <div class="content">
-            <slot/>
-        </div>
-
-        <button class="after" v-if="$slots?.after"
-            :disabled="after?.disabled || disabled === 'all'"
-
-            @click.prevent.stop="$emit('clickAfter', $event)"
-        >
-            <slot name="after"/>
-        </button>
+        <slot/>
     </button>
 </template>
 
 <script lang="ts" setup>
 
-type Variant = 'default' | 'destructive' | 'outline' | 'ghost';
-
-interface PlusProps {
-    disabled?: boolean;
-}
-
-
-const $slots = defineSlots<{
-    default(): any;
-    before(): any;
-    after(): any;
-}>();
+export type ButtonVariant = 'default' | 'outline' | 'secondary' | 'ghost' | 'destructive' | 'link';
 
 const $emit = defineEmits({
-    clickBefore(event: MouseEvent) {
-        return event;
-    },
     click(event: MouseEvent) {
-        return event;
-    },
-    clickAfter(event: MouseEvent) {
         return event;
     }
 });
 
 
 const props = withDefaults(defineProps<{
-    variant?: Variant;
-    disabled?: boolean | 'all';
-    before?: PlusProps;
-    after?: PlusProps;
+    variant?: ButtonVariant;
+    disabled?: boolean;
 }>(), {
-    variant: 'default'
+    variant: 'default',
+    disabled: false
 });
 
 </script>
@@ -68,75 +32,51 @@ const props = withDefaults(defineProps<{
 <style lang="css" scoped>
 
 button {
-    cursor: pointer;
     display: flex;
     margin: 0;
     padding: 0;
     border: none;
     background-color: transparent;
+    user-select: none;
 }
 
-.ui-button .content,
-.ui-button .before,
-.ui-button .after {
+.ui-button {
     display: flex;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 7px;
-    padding-right: 7px;
-    color: var(--background-primary);
+    padding: var(--hx-padding-xl);
+    min-height: 36px;
+    color: #000;
+    font-size: 14px;
     align-items: center;
-    background-color: var(--text-primary);
+    justify-content: center;
+    color: var(--hx-button-text-primary);
+    border-radius: var(--hx-border-radius);
+    background-color: var(--hx-button-background-primary);
+    box-sizing: border-box;
     transition: filter .2s, box-shadow .2s, background-color .2s;
+    gap: 4px;
 }
 
-.ui-button:not(:has(.before)) .content {
-    padding-left: 14px;
-    border-top-left-radius: 0.5rem;
-    border-bottom-left-radius: 0.5rem;
+::v-deep(svg.lucide) {
+    width: 16px;
+    height: 16px;
 }
 
-.ui-button .content:not(:has(+ .after)) {
-    padding-right: 14px;
-    border-top-right-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
+.ui-button:disabled {
+    cursor: not-allowed;
+    filter: brightness(0.8);
+    opacity: .7;
 }
 
-.ui-button .before {
-    padding: 8px 7px 8px 10px;
-    border-radius: 0.5rem 0 0 0.5rem;
-    border-right: 1px solid var(--background-primary);
-}
-
-.ui-button .content {
-    width: 100%;
-    position: relative;
-    transform-origin: center;
-}
-
-.ui-button .after {
-    padding: 8px 10px 8px 7px;
-    border-radius: 0 0.5rem 0.5rem 0;
-    border-left: 1px solid var(--background-primary);
-}
-
-
-
-.ui-button:not(:disabled) .content:hover,
-.ui-button .before:not(:disabled):hover,
-.ui-button .after:not(:disabled):hover {
+.ui-button:not(:disabled):hover {
+    cursor: pointer;
     filter: brightness(0.8);
 }
 
-.ui-button:not(:disabled) .content:active,
-.ui-button .before:not(:disabled):active,
-.ui-button .after:not(:disabled):active {
-    filter: brightness(0.5);
+.ui-button:not(:disabled):active {
+    filter: brightness(0.6);
 }
 
-.ui-button.outline:not(:disabled) .content:active,
-.ui-button.outline .before:not(:disabled):active,
-.ui-button.outline .after:not(:disabled):active {
+.ui-button.outline:not(:disabled):active {
     box-shadow: 0 0 0 3px var(--background-secondary);
 }
 
@@ -161,25 +101,28 @@ button {
 }
 
 
+/* ? Secondary style */
+.ui-button.secondary {
+    color: var(--hx-text-primary);
+    background-color: #ffffff15;
+}
+
 
 /* ? Destructive style */
-.ui-button.destructive .content,
-.ui-button.destructive .after,
-.ui-button.destructive .before {
-    background-color: var(--color-red);
+.ui-button.destructive {
+    color: var(--hx-text-primary);
+    background-color: var(--hx-color-red);
 }
 
 
 /* ? Outline style */
-.ui-button.outline .content,
-.ui-button.outline .after,
-.ui-button.outline .before {
-    color: var(--text-primary);
-    border: 1px solid var(--background-t);
-    background-color: var(--background-secondary);
+.ui-button.outline {
+    color: var(--hx-text-primary);
+    border: 1px solid var(--hx-background-primary);
+    background-color: var(--hx-background-secondary);
 }
 
-.ui-button.outline:has(.before) .content {
+.ui-button.outline:has(.before) {
     border-left: none;
 
     &::before {
@@ -189,46 +132,20 @@ button {
         height: 70%;
         top: 50%;
         left: 0;
-        background-color: var(--background-t);
+        background-color: transparent;
         transform: translateY(-50%);
     }
-}
-
-.ui-button.outline .content:has(+ .after) {
-    border-right: none;
-
-    &::after {
-        content: ' ';
-        position: absolute;
-        width: 1px;
-        height: 70%;
-        top: 50%;
-        right: 0;
-        background-color: var(--background-t);
-        transform: translateY(-50%);
-    }
-}
-
-.ui-button.outline .after {
-    border-left: none;
-}
-.ui-button.outline .before {
-    border-right: none;
 }
 
 
 /* ? Ghost style */
-.ui-button.ghost .content,
-.ui-button.ghost .after,
-.ui-button.ghost .before {
+.ui-button.ghost {
     color: var(--text-primary);
     background-color: transparent;
 }
 
-.ui-button.ghost .content:hover,
-.ui-button.ghost .after:hover,
-.ui-button.ghost .before:hover {
-    background-color: var(--background-secondary);
+.ui-button.ghost:hover {
+    background-color: #ffffff15;
 }
 
 </style>

@@ -153,9 +153,9 @@ onUnmounted(() => {
     top: 0;
     left: 0;
     font-size: 12px;
-    border-radius: 0.5rem;
-    border: 1px solid var(--background-t);
-    background-color: var(--background-secondary);
+    border-radius: var(--hx-border-radius);
+    border: 1px solid var(--hx-background-transparent);
+    background-color: var(--hx-background-secondary);
     z-index: 1000;
 
     &.top { --v: calc(var(--target-y) - 100% - var(--gap-v)); }

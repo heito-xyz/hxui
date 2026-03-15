@@ -79,7 +79,7 @@ const open = ref(false);
         padding: 12px;
         align-items: center;
         border-radius: 15px;
-        background-color: var(--background-secondary);
+        background-color: var(--hx-background-secondary);
         transition: .2s;
         user-select: none;
 
@@ -110,7 +110,7 @@ const open = ref(false);
                 }
 
                 &:nth-child(2) {
-                    color: var(--text-primary);
+                    color: var(--hx-text-primary);
                     font-size: 10px;
                 }
             }

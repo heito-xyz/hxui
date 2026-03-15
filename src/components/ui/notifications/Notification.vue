@@ -39,8 +39,7 @@
 
         <ul class="options" v-show="showOptions && notification?.mode === 'fixed'">
             <li @click.stop.prevent="$emit('hide')">
-                <!-- <Icon name="minus"/> -->
-                x
+                <X/>
             </li>
         </ul>
 
@@ -54,6 +53,7 @@ import { ref } from 'vue';
 
 // * Components
 import Image from '../Image.vue';
+import { X } from 'lucide-vue-next';
 
 // * Animations
 import AnimationHeight from '../../animations/Height.vue';
@@ -116,7 +116,7 @@ const hide = ref<boolean>(false);
     min-width: 215px;
     position: relative;
     border-radius: 0.5rem;
-    border: 1px solid var(--background-t);
+    border: 1px solid var(--hx-background-transparent);
     background-color: #00000055;
     backdrop-filter: blur(10px);
     transition: .2s;
@@ -189,7 +189,7 @@ const hide = ref<boolean>(false);
 
                 &:nth-child(2) {
                     display: -webkit-box;
-                    color: var(--text-primary);
+                    color: var(--hx-text-primary);
                     font-size: 12px;
                     line-clamp: 2;
                     -webkit-line-clamp: 2;
@@ -218,7 +218,7 @@ const hide = ref<boolean>(false);
             transition: .2s;
 
             &:hover {
-                background-color: var(--background-secondary);
+                background-color: var(--hx-background-secondary);
             }
 
             &:nth-child(2n + 1):not(:has(+ li)) {
@@ -245,7 +245,7 @@ const hide = ref<boolean>(false);
                     }
 
                     &:nth-child(2) {
-                        color: var(--text-primary);
+                        color: var(--hx-text-primary);
                         font-size: 12px;
                     }
                 }
@@ -266,8 +266,8 @@ const hide = ref<boolean>(false);
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            border: 1px solid var(--background-primary);
-            background-color: var(--background-secondary);
+            border: 1px solid var(--hx-background-primary);
+            background-color: var(--hx-background-secondary);
 
             i {
                 font-size: 14px;

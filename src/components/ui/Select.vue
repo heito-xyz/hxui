@@ -1,13 +1,13 @@
 <template>
     <div :class="['ui-select', { selected: Boolean(selectedOption) }]">
         <Popover :side="side" :style="{ width: `${width}px` }">
-            <template v-slot="{ toggle, isOpened }">
+            <template v-slot="{ toggle }">
                 <Button variant="outline" :disabled="disabled"
-                    @click.prevent.stop="toggle($event); onClick($event)"
+                    @click.prevent.stop="onClick($event, toggle)"
                 >
                     <span>{{ selectedOption ? (selectedOption?.label || selectedOption?.value) : placeholder }}</span>
 
-                    <div>{{ isOpened ? '-' : '+' }}</div>
+                    <ChevronsUpDown style="opacity: .5;"/>
                 </Button>
             </template>
 
@@ -44,6 +44,7 @@ import { computed, ref } from 'vue';
 import Button from './Button.vue';
 import Popover from './Popover.vue';
 import SelectOption, { type OptionOption, type Option, type OptionType } from '../modules/ui/SelectOption.vue';
+import { ChevronsUpDown } from 'lucide-vue-next';
 
 
 const $emit = defineEmits({
@@ -81,75 +82,31 @@ const selectedOption = computed(() =>
 );
 
 
+let togglePopover: (() => void) | null;
+
+
 function onSelectOption(option: Option) {
     if (option.type !== 'option') return;
 
     selectedValue.value = option?.value;
 
-    // isOpened.value = false;
-
     $emit('select', option);
+
+    if (togglePopover) togglePopover();
 }
 
 
-function onClick(event: MouseEvent) {
+function onClick(event: MouseEvent, toggle: (event: MouseEvent) => void) {
     const target = event?.currentTarget as HTMLElement;
 
     if (!target) return;
 
+    toggle(event);
+
+    togglePopover = () => toggle(event);
+
     width.value = Math.min(Math.max(target?.clientWidth, 169), window.innerWidth > 512 ? 512 : (window.innerWidth - 24));
 }
-
-
-
-// function setMenuPosition(elHeader: HTMLElement, elOptions: HTMLElement) {
-//     if (!elHeader || !elOptions) return;
-
-//     const { width, top, bottom } = elHeader?.getBoundingClientRect();
-//     const { width: w, height } = elOptions?.getBoundingClientRect();
-
-//     const isTop = height + bottom > window.innerHeight;
-
-//     elOptions.style.width = `${width}px`;
-//     elOptions.style.top = `${isTop ? top - height - 8 : bottom}px`
-//     elOptions.style.setProperty('--width', `${width}px`);
-// }
-
-
-// function onShowSelectMenu(event: MouseEvent) {
-//     isOpened.value = true;
-
-//     const elHeader = event.currentTarget as HTMLElement;
-//     const elParent = elHeader.parentElement!;
-
-//     const setPosition = () => {
-//         if (!isOpened.value) return;
-
-//         const elOptions = elParent?.querySelector('.options') as HTMLElement;
-
-//         setMenuPosition(elHeader, elOptions);
-//     };
-
-//     setTimeout(setPosition, 10);
-
-//     const scrollHandler = () => requestAnimationFrame(setPosition);
-
-//     document.addEventListener('scroll', scrollHandler, { capture: true, passive: true });
-
-
-//     const clickHandler = (event: MouseEvent) => {
-//         const path = event.composedPath?.() || (event as any).path;
-
-//         if (path?.includes(elParent)) return;
-
-//         isOpened.value = false;
-
-//         document.removeEventListener('scroll', scrollHandler);
-//         document.removeEventListener('click', clickHandler);
-//     }
-
-//     document.addEventListener('click', clickHandler);
-// }
 
 </script>
 
@@ -162,7 +119,6 @@ function onClick(event: MouseEvent) {
 
 
 .ui-select {
-    width: 169px;
     position: relative;
     user-select: none;
 }
@@ -171,15 +127,16 @@ function onClick(event: MouseEvent) {
     width: 100%;
 }
 
-::v-deep(.ui-button) .content {
+::v-deep(.ui-button) {
+    font-size: 14px;
     justify-content: space-between;
 }
 
-::v-deep(.ui-button) .content span {
+::v-deep(.ui-button) span {
     opacity: 0.7;
 }
 
-.ui-select.selected ::v-deep(.ui-button) .content span {
+.ui-select.selected ::v-deep(.ui-button) span {
     opacity: 1;
 }
 
@@ -192,10 +149,10 @@ function onClick(event: MouseEvent) {
     width: clamp(169px, var(--width), 512px);
     min-width: 169px;
     position: fixed;
-    border-radius: 0.5rem;
-    border: 1px solid var(--background-t);
+    border-radius: var(--hx-border-radius);
+    border: 1px solid var(--hx-background-transparent);
     flex-direction: column;
-    background-color: var(--background-secondary);
+    background-color: var(--hx-background-secondary);
     transform: translateX(calc(var(--width) / 2 - 50%));
     transition: opacity .2s;
     box-sizing: border-box;

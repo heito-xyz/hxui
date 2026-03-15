@@ -34,7 +34,7 @@ div.ui-skeleton {
     align-items: center;
     justify-content: center;
     border-radius: 0.5rem;
-    background-color: var(--background-secondary);
+    background-color: var(--hx-background-secondary);
     overflow: hidden;
 
     div {

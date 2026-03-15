@@ -1,25 +1,45 @@
 <template>
-    <slot name="trigger"
+    <slot
         :show="show"
         :hide="hide"
         :toggle="toggle"
+        :isOpened="isOpened"
     />
 
     <Teleport to="body">
         <Transition :name="typeof transition === 'string' ? transition : transition?.name">
-            <div :class="['dialog', ...dialogSide]" v-if="open"
+            <div :class="['dialog', ...dialogSide]" v-show="isOpened"
                 :style="{ '--gap-v': dialogPadding[0] + 'px', '--gap-h': dialogPadding[1] + 'px' }"
             >
                 <div class="background"
                     @click.prevent.stop="closeOnClickOutside && hide()"
                 ></div>
 
-                <div class="content">
-                    <slot name="default"/>
+                <div class="content" :style="style">
+                    <div class="header" v-if="isShowedHeader">
+                        <h2>
+                            <slot name="title">
+                                {{ title }}
+                            </slot>
+                        </h2>
+
+                        <p>
+                            <slot name="description">
+                                {{ description }}
+                            </slot>
+                        </p>
+                    </div>
+
+                    <slot name="content"
+                        :show="show"
+                        :hide="hide"
+                        :toggle="toggle"
+                        :isOpened="isOpened"
+                    />
 
                     <div class="buttons">
                         <div @click="hide">
-                            x
+                            <X :size="16"/>
                         </div>
 
                         <div v-for="(button, idx) of buttons" :key="idx"
@@ -34,12 +54,21 @@
 
 <script lang="ts" setup>
 
-import { computed } from 'vue';
+import { ref, computed, type StyleValue } from 'vue';
+
+import { X } from 'lucide-vue-next';
 
 // * Types
 export type Side = 'top' | 'right' | 'bottom' | 'left' | 'center';
 
 export type Align = 'start' | 'end';
+
+export interface DefaultSlotProps {
+    show(event: MouseEvent): void;
+    hide(): void;
+    toggle(event: MouseEvent): void;
+    isOpened: boolean;
+}
 
 export interface DialogButton {
     icon?: string;
@@ -52,41 +81,71 @@ type TransitionOptions = string | {
     name: string;
 };
 
+const $slots = defineSlots<{
+    default(props: DefaultSlotProps): void;
+    content(props: DefaultSlotProps): void;
+    title(): void;
+    description(): void;
+}>();
 
-const open = defineModel<boolean>('open');
-
+const $emit = defineEmits<{
+    (e: 'update:open', bool: boolean): void;
+    (e: 'show'): void;
+    (e: 'hide'): void;
+}>();
 
 const props = withDefaults(defineProps<{
+    title?: string;
+    description?: string;
     side?: Side | [Side, Align];
     transition?: TransitionOptions;
     collisionPadding?: number | [number, number];
     closeOnClickOutside?: boolean;
     buttons?: Array<DialogButton>;
+    style?: StyleValue;
 }>(), {
-    side: () => 'right',
+    side: () => 'center',
     transition: () => 'show-dialog',
     collisionPadding: () => 24,
     closeOnClickOutside: true,
     buttons: () => []
 });
 
-
+const isOpened = ref<boolean>(false);
 
 const dialogSide = computed(() => typeof props.side === 'string' ? [props.side, 'center'] : props.side);
 const dialogPadding = computed(() => typeof props.collisionPadding === 'number' ? [props.collisionPadding, props.collisionPadding] : props.collisionPadding);
 
+const isShowedHeader = computed(() => {
+    return Boolean(props.title) || Boolean(props.description) || Boolean($slots.title) || Boolean($slots.description);
+})
 
+let targetEvent: MouseEvent | null = null;
+
+function setOpen(bool: boolean) {
+    isOpened.value = bool;
+
+    $emit('update:open', bool);
+}
 
 function show(event: MouseEvent) {
-    open.value = true;
+    setOpen(true);
+
+    targetEvent = event;
+
+    $emit('show');
 }
 
 function hide() {
-    open.value = false;
+    setOpen(false);
+
+    targetEvent = null;
+
+    $emit('hide');
 }
 
 function toggle(event: MouseEvent) {
-    if (open.value) hide();
+    if (isOpened.value) hide();
     else show(event);
 }
 
@@ -160,11 +219,27 @@ function toggle(event: MouseEvent) {
     .content {
         padding: 12px;
         position: relative;
-        border-radius: 0.5rem;
-        border: 1px solid var(--background-t);
-        background-color: var(--background-secondary);
+        color: var(--hx-text-primary);
+        border-radius: var(--hx-border-radius);
+        border: 1px solid var(--hx-background-transparent);
+        background-color: var(--hx-background-secondary);
         transition: transform .2s;
         z-index: 2;
+
+        .header {
+            margin-bottom: 12px;
+
+            h2 {
+                font-size: 18px;
+                font-weight: 600;
+            }
+
+            p {
+                margin-top: 4px;
+                font-size: 14px;
+                opacity: .7;
+            }
+        }
     }
 
     .buttons {
@@ -175,13 +250,13 @@ function toggle(event: MouseEvent) {
         div {
             cursor: pointer;
             display: flex;
-            width: 24px;
-            height: 24px;
-            border-radius: 0.5rem;
-            border: 1px solid var(--background-t);
+            width: 28px;
+            height: 28px;
+            border-radius: var(--hx-border-radius);
+            border: 1px solid var(--hx-background-transparent);
             align-items: center;
             justify-content: center;
-            background-color: var(--background-secondary);
+            background-color: var(--hx-background-secondary);
         }
     }
 }
