@@ -1,6 +1,8 @@
 <template>
     <label :class="['ui-input', type]">
-        <input :type="type" v-model="value"
+        <slot name="before"/>
+
+        <input :type="type" v-model="model"
             :placeholder="placeholder"
             :min="min"
             :max="max"
@@ -11,12 +13,14 @@
             @focus="$emit('focus', $event)"
             @blur="$emit('blur', $event)"
         >
+
+        <slot name="after"/>
     </label>
 </template>
 
 <script lang="ts" setup>
 
-type Type = 'text' | 'password';
+type Type = 'text' | 'password' | 'number';
 
 type InputEvent = Event & { target: HTMLInputElement };
 
@@ -27,6 +31,9 @@ interface Props {
     placeholder?: string;
     min?: number;
     max?: number;
+    regex?: RegExp;
+    mask?: string;
+    maskReplace?: string;
 }
 
 
@@ -36,11 +43,7 @@ const $slots = defineSlots<{
 }>();
 
 
-const value = defineModel('value', {
-    set(v: string | number) {
-        return v;
-    }
-});
+const model = defineModel();
 
 
 const $emit = defineEmits({

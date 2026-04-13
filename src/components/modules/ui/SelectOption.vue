@@ -26,10 +26,10 @@ interface TemplateOption<Type = string> {
     type?: Type;
 }
 
-export interface OptionOption extends TemplateOption<'option'> {
+export interface OptionOption<T> extends TemplateOption<'option'> {
     label?: string;
     text?: string;
-    value: string | number | number;
+    value: T;
     disabled?: boolean;
     useDefaultStyle?: boolean;
 }
@@ -40,18 +40,18 @@ export interface OptionLabel extends TemplateOption<'label'> {
 
 export interface OptionSeparator extends TemplateOption<'separator'> {}
 
-export type Option = OptionOption | OptionLabel | OptionSeparator;
+export type Option<T = string | number | boolean> = OptionOption<T> | OptionLabel | OptionSeparator;
 
 
 const $emit = defineEmits({
-    click(event: MouseEvent, option: OptionOption) {
+    click(event: MouseEvent, option: OptionOption<string | number | boolean>) {
         return { event, option };
     }
 });
 
 
 const props = defineProps<{
-    option: Option;
+    option: Option<any>;
 }>();
 
 
@@ -88,7 +88,7 @@ function onClick(event: MouseEvent) {
 .option.separator {
     margin-top: 4px;
     margin-bottom: 4px;
-    border-top: 1px solid var(--background-t);
+    border-top: 1px solid var(--hx-background-transparent);
 }
 
 
@@ -97,7 +97,7 @@ function onClick(event: MouseEvent) {
     padding: 4px 8px;
     border-radius: 0.5rem;
     align-items: center;
-    background-color: var(--background-secondary);
+    background-color: var(--hx-background-secondary);
     transition: .2s;
     overflow: hidden;
 }

@@ -1,12 +1,14 @@
 <template>
     <div class="ui-menu-children" ref="el">
-        <MenuButton :disabled="disabled">
+        <MenuButton :disabled="disabled"
+            @click="onClick"
+        >
             <slot/>
 
-            <ChevronRight/>
+            <ChevronRight style="margin-left: auto;"/>
         </MenuButton>
 
-        <div class="children-menu">
+        <div :class="['children-menu', { fixed: fixedMenu }]">
             <slot name="content"/>
         </div>
     </div>
@@ -14,7 +16,7 @@
 
 <script lang="ts" setup>
 
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, type HTMLAttributes } from 'vue';
 
 import MenuButton from './MenuButton.vue';
 
@@ -35,8 +37,16 @@ defineProps<{
 
 const el = ref<HTMLDivElement>();
 
+const fixedMenu = ref(false);
+
 let target: HTMLElement | null = null;
 let intersectionObserver: IntersectionObserver | null = null;
+let timer: number;
+
+
+function onClick() {
+    fixedMenu.value = !fixedMenu.value;
+}
 
 
 onMounted(() => {
@@ -49,11 +59,13 @@ onMounted(() => {
             const isVisible = entry.isIntersecting && window.getComputedStyle(entry.target).display !== 'none';
             
             if (isVisible) {
-                console.log('🎉 Элемент появился!', new Date().toLocaleTimeString());
-                // Ваш код при появлении
+                timer = setTimeout(() => {
+                    fixedMenu.value = true;
+                }, 500);
             } else if (!entry.isIntersecting) {
-                console.log('👋 Элемент скрылся!', new Date().toLocaleTimeString());
-                // Ваш код при скрытии
+                fixedMenu.value = false;
+
+                clearTimeout(timer);
             }
         });
     }, {
@@ -80,10 +92,6 @@ onUnmounted(() => {
                 display: flex;
             }
         }
-
-        svg.lucide:last-child {
-            margin-left: auto;
-        }
     }
 
     .children-menu {
@@ -101,7 +109,8 @@ onUnmounted(() => {
         transition: opacity .2s;
         box-sizing: border-box;
         
-        &:hover {
+        &:hover,
+        &.fixed {
             display: flex;
         }
     }

@@ -37,7 +37,7 @@ button {
     transition: background-color .2s;
 
     &:not(:disabled):hover {
-        background-color: #ffffff15; // var(--hx-background-primary);
+        background-color: #ffffff15;
     }
 
     &:disabled {

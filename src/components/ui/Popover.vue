@@ -1,10 +1,5 @@
 <template>
-    <slot
-        :show="show"
-        :hide="hide"
-        :toggle="toggle"
-        :isOpened="isOpened"
-    />
+    <slot v-bind="{ show, hide, toggle, isOpened }"/>
 
     <Teleport to="body">
         <Transition
@@ -19,7 +14,9 @@
                 aria-modal="true"
                 :style="style"
             >
-                <slot name="content"/>
+                <slot name="content"
+                    v-bind="{ show, hide, toggle, isOpened }"
+                />
             </div>
         </Transition>
     </Teleport>

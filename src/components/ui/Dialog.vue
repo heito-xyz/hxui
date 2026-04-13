@@ -1,10 +1,5 @@
 <template>
-    <slot
-        :show="show"
-        :hide="hide"
-        :toggle="toggle"
-        :isOpened="isOpened"
-    />
+    <slot v-bind="{ show, hide, toggle, isOpened }"/>
 
     <Teleport to="body">
         <Transition :name="typeof transition === 'string' ? transition : transition?.name">
@@ -18,23 +13,24 @@
                 <div class="content" :style="style">
                     <div class="header" v-if="isShowedHeader">
                         <h2>
-                            <slot name="title">
+                            <slot name="title"
+                                v-bind="{ show, hide, toggle, isOpened }"
+                            >
                                 {{ title }}
                             </slot>
                         </h2>
 
                         <p>
-                            <slot name="description">
+                            <slot name="description"
+                                v-bind="{ show, hide, toggle, isOpened }"
+                            >
                                 {{ description }}
                             </slot>
                         </p>
                     </div>
 
                     <slot name="content"
-                        :show="show"
-                        :hide="hide"
-                        :toggle="toggle"
-                        :isOpened="isOpened"
+                        v-bind="{ show, hide, toggle, isOpened }"
                     />
 
                     <div class="buttons">

@@ -43,7 +43,7 @@ button {
 .ui-button {
     display: flex;
     padding: var(--hx-padding-xl);
-    min-height: 36px;
+    min-height: 32px;
     color: #000;
     font-size: 14px;
     align-items: center;
@@ -56,7 +56,7 @@ button {
     gap: 4px;
 }
 
-::v-deep(svg.lucide) {
+:deep(svg.lucide) {
     width: 16px;
     height: 16px;
 }
@@ -118,23 +118,8 @@ button {
 /* ? Outline style */
 .ui-button.outline {
     color: var(--hx-text-primary);
-    border: 1px solid var(--hx-background-primary);
+    border: 1px solid var(--hx-background-transparent);
     background-color: var(--hx-background-secondary);
-}
-
-.ui-button.outline:has(.before) {
-    border-left: none;
-
-    &::before {
-        content: ' ';
-        position: absolute;
-        width: 1px;
-        height: 70%;
-        top: 50%;
-        left: 0;
-        background-color: transparent;
-        transform: translateY(-50%);
-    }
 }
 
 
