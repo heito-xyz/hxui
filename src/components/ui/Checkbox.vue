@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 
-const model = defineModel();
+const model = defineModel('value');
 
 withDefaults(defineProps<{
     label?: string;

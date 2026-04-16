@@ -19,25 +19,23 @@
             </template>
 
             <template #content>
-                <div class="options">
-                    <template v-for="(option, index) in listOptions" :key="index">
-                        <template v-if="option?.type === 'label' || option?.type === 'separator' || (option.type === 'option' && option?.useDefaultStyle === true)">
+                <template v-for="(option, index) in listOptions" :key="index">
+                    <template v-if="option?.type === 'label' || option?.type === 'separator' || (option.type === 'option' && option?.useDefaultStyle === true)">
+                        <SelectOption :option="option"
+                            @click="onSelectOption(option)"
+                        />
+                    </template>
+    
+                    <template v-else>
+                        <slot name="option"
+                            v-bind="{ option, index, select: () => onSelectOption(option) }"
+                        >
                             <SelectOption :option="option"
                                 @click="onSelectOption(option)"
                             />
-                        </template>
-        
-                        <template v-else>
-                            <slot name="option"
-                                v-bind="{ option, index, select: () => onSelectOption(option) }"
-                            >
-                                <SelectOption :option="option"
-                                    @click="onSelectOption(option)"
-                                />
-                            </slot>
-                        </template>
+                        </slot>
                     </template>
-                </div>
+                </template>
             </template>
         </Popover>
     </div>
@@ -119,11 +117,11 @@ function onClick(event: MouseEvent, toggle: (event: MouseEvent) => void) {
 
 
 watch(() => props.value, value => {
-    if (value) selectedValue.value = value;
+    if (value !== undefined) selectedValue.value = value;
 });
 
 onMounted(() => {
-    if (props.value) selectedValue.value = props.value;
+    if (props.value !== undefined) selectedValue.value = props.value;
 });
 
 </script>
@@ -156,25 +154,6 @@ onMounted(() => {
 
 .ui-select.selected ::v-deep(.ui-button) span {
     opacity: 1;
-}
-
-
-.ui-select .options {
-    display: flex;
-    margin: 4px 0;
-    padding: 8px;
-    max-width: 512px;
-    width: clamp(169px, var(--width), 512px);
-    min-width: 169px;
-    position: fixed;
-    border-radius: var(--hx-border-radius);
-    border: 1px solid var(--hx-background-transparent);
-    flex-direction: column;
-    background-color: var(--hx-background-secondary);
-    transform: translateX(calc(var(--width) / 2 - 50%));
-    transition: opacity .2s;
-    box-sizing: border-box;
-    z-index: 101;
 }
 
 </style>

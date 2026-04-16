@@ -1,14 +1,13 @@
 <template>
-    <div class="ui-button-group">
+    <div class="ui-group">
         <slot/>
     </div>
 </template>
 
 <style lang="scss" scoped>
 
-.ui-button-group {
+.ui-group {
     display: flex;
-    margin-top: 12px;
     align-items: center;
     justify-content: end;
 

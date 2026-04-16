@@ -19,7 +19,7 @@ export default defineConfig({
     build: {
         cssCodeSplit: false,
         lib: {
-            name: 'HeitoVueComponents',
+            name: 'hxui',
             entry: path.resolve(__dirname, 'src/index.ts'),
             fileName: format => `index.${format}.js`
         },

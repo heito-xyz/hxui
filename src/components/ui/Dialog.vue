@@ -33,6 +33,14 @@
                         v-bind="{ show, hide, toggle, isOpened }"
                     />
 
+                    <Group v-if="$slots?.footer"
+                        style="margin-top: 12px;"
+                    >
+                        <slot name="footer"
+                            v-bind="{ show, hide, toggle, isOpened }"
+                        />
+                    </Group>
+
                     <div class="buttons">
                         <div @click="hide">
                             <X :size="16"/>
@@ -53,6 +61,7 @@
 import { ref, computed, type StyleValue } from 'vue';
 
 import { X } from 'lucide-vue-next';
+import Group from './Group.vue';
 
 // * Types
 export type Side = 'top' | 'right' | 'bottom' | 'left' | 'center';
@@ -80,6 +89,7 @@ type TransitionOptions = string | {
 const $slots = defineSlots<{
     default(props: DefaultSlotProps): void;
     content(props: DefaultSlotProps): void;
+    footer(props: DefaultSlotProps): void;
     title(): void;
     description(): void;
 }>();

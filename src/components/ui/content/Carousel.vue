@@ -12,10 +12,12 @@
             <div v-for="(groupItems, groupIndex) of groups" :key="groupIndex"
                 class="carousel-slide-group"
             >
-                <template v-for="(item, index) in groupItems" :key="index">
-                    <div class="carousel-slide">
-                        <slot name="item" v-bind="{ item, index: (groupIndex * props.step) + index, groupIndex, itemIndexInGroup: index }"></slot>
-                    </div>
+                <template v-if="(groupIndex >= (slideIndex - 1) && groupIndex <= (slideIndex + 1)) || groupIndex === slideIndex">
+                    <template v-for="(item, index) in groupItems" :key="index">
+                        <div class="carousel-slide">
+                            <slot name="item" v-bind="{ item, index: (groupIndex * props.step) + index, groupIndex, itemIndexInGroup: index }"></slot>
+                        </div>
+                    </template>
                 </template>
             </div>
         </div>
@@ -30,13 +32,20 @@
 
 <script lang="ts" setup generic="T">
 
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 
 // * Components
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
 
 
+const $emit = defineEmits({
+    'slide:change'(index: number) {
+        return index;
+    }
+});
+
 const props = withDefaults(defineProps<{
+    slide?: number;
     items: Array<T>;
     inset?: boolean;
     step?: number;
@@ -75,7 +84,19 @@ function setSlide(index: number) {
     } else {
         slideIndex.value = index;
     }
+
+    $emit('slide:change', slideIndex.value);
 }
+
+
+watch(() => props?.slide, value => {
+    if (value !== undefined && !isNaN(value)) setSlide(value);
+});
+
+
+onMounted(() => {
+    if (props?.slide !== undefined && !isNaN(props?.slide)) setSlide(props?.slide);
+});
 
 </script>
 
@@ -93,11 +114,11 @@ div.ui-carousel {
     &.inset {
         .carousel-button {
             &.prev {
-                transform: translateX(calc(-100% - 12px));
+                left: -40px;
             }
 
             &.next {
-                transform: translateX(calc(100% + 12px));
+                right: -40px;
             }
         }
     }
@@ -149,6 +170,8 @@ div.ui-carousel {
         background: #00000055;
         backdrop-filter: blur(5px);
         transition: all .2s, transform 0s;
+        transform: translateY(-50%);
+        transform-origin: center;
         user-select: none;
         opacity: .3;
         z-index: 2;
@@ -159,7 +182,7 @@ div.ui-carousel {
 
         &:active {
             box-shadow: 0 0 0 4px var(--hx-background-transparent);
-            transform: scale(.9);
+            transform: scale(.9) translateY(-50%);
         }
     
         &.prev {

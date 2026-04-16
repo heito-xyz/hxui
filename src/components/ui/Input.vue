@@ -1,5 +1,5 @@
 <template>
-    <label :class="['ui-input', type]">
+    <label :class="['ui-input', type, { error: !validRegex }]">
         <slot name="before"/>
 
         <input :type="type" v-model="model"
@@ -20,20 +20,20 @@
 
 <script lang="ts" setup>
 
+import { computed } from 'vue';
+
+// * Types
 type Type = 'text' | 'password' | 'number';
 
 type InputEvent = Event & { target: HTMLInputElement };
 
-
 interface Props {
-    type?: Type;
-    disabled?: boolean;
-    placeholder?: string;
-    min?: number;
-    max?: number;
-    regex?: RegExp;
-    mask?: string;
-    maskReplace?: string;
+    type: Type;
+    disabled: boolean;
+    placeholder: string;
+    min: number;
+    max: number;
+    regex: RegExp;
 }
 
 
@@ -43,7 +43,7 @@ const $slots = defineSlots<{
 }>();
 
 
-const model = defineModel();
+const model = defineModel('value');
 
 
 const $emit = defineEmits({
@@ -62,33 +62,18 @@ const $emit = defineEmits({
 });
 
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Partial<Props>>(), {
     type: 'text'
+});
+
+
+const validRegex = computed(() => {
+    return props?.regex && (model.value !== undefined && model.value !== null && String(model.value).trim() !== '') ? props?.regex?.test(String(model.value)) : true;
 });
 
 </script>
 
 <style lang="scss" scoped>
-
-input {
-    padding: 0;
-    width: 100%;
-    color: var(--hx-text-primary);
-    font-size: 14px;
-    border: none;
-    background-color: transparent;
-    outline: none;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-}
-
-input[type='number'] {
-    -moz-appearance: textfield;
-}
-
 
 .ui-input {
     display: flex;
@@ -105,45 +90,41 @@ input[type='number'] {
     box-sizing: border-box;
     user-select: none;
     overflow: hidden;
+
+    &.error {
+        border-color: var(--hx-color-red);
+    }
+
+    input {
+        padding: 0;
+        width: 100%;
+        color: var(--hx-text-primary);
+        font-size: 14px;
+        border: none;
+        background-color: transparent;
+        outline: none;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+
+    input[type='number'] {
+        -moz-appearance: textfield;
+    }
+
+    /* ? Type - number */
+    &.number {
+        input {
+            margin: 0 6px;
+            text-align: center;
+        }
+    }
 }
 
 .ui-input:has(> input:focus) {
     box-shadow: 0 0 0 3px var(--hx-background-secondary);
-}
-
-.before {
-    margin-right: 4px;
-}
-.after {
-    margin-left: 4px;
-}
-
-
-/* ? Type - number */
-.ui-input.number {
-    padding: 0;
-}
-
-.ui-input.number input {
-    margin: 0 6px;
-    text-align: center;
-}
-
-.number-btn {
-    cursor: pointer;
-    padding: 6px 10px;
-    transition: filter .2s;
-    background-color: var(--hx-background-secondary);
-}
-.number-btn.l {
-    border-right: 1px solid var(--hx-background-transparent);
-}
-.number-btn.r {
-    border-left: 1px solid var(--hx-background-transparent);
-}
-
-.number-btn:hover {
-    filter: brightness(0.9);
 }
 
 </style>

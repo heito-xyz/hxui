@@ -219,6 +219,7 @@ onUnmounted(() => {
 .ui-popover {
     max-width: 215px;
     min-width: 128px;
+    max-height: 50vh;
     position: fixed;
     top: 0;
     left: 0;
@@ -229,6 +230,7 @@ onUnmounted(() => {
     background-color: var(--hx-background-secondary);
     transition: opacity .2s;
     box-sizing: border-box;
+    overflow-x: hidden;
     z-index: 1010;
 
     &.top { --v: calc(var(--target-y) - 100% - var(--gap-v)); }

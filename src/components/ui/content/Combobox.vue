@@ -9,7 +9,7 @@
                 <Input
                     :placeholder="placeholder"
                     
-                    v-model="model"
+                    v-model:value="model"
                     
                     @input="onValue($event as any, show, hide)"
                     @click="show"
@@ -23,7 +23,7 @@
     </div>
 </template>
 
-<script lang="ts" setup generic="T">
+<script lang="ts" setup generic="T extends string">
 
 import { computed } from 'vue';
 
@@ -50,7 +50,7 @@ const props = defineProps<{
 }>();
 
 
-const model = defineModel<T>({
+const model = defineModel<T>('value', {
     required: false,
     default: ''
 });
