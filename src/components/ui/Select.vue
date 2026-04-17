@@ -144,12 +144,20 @@ onMounted(() => {
 }
 
 :deep(.ui-button) {
+    max-width: 100%;
     font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     justify-content: space-between;
+    overflow: hidden;
 
     span {
         opacity: 0.7;
     }
+}
+
+.lucide.lucide-chevrons-up-down-icon {
+    min-width: 16px;
 }
 
 .ui-select.selected ::v-deep(.ui-button) span {

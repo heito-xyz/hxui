@@ -3,6 +3,7 @@
         <input type="checkbox"
             :name="name"
             :value="value"
+            :disabled="disabled"
 
             v-model="model"
         >
@@ -27,8 +28,10 @@ withDefaults(defineProps<{
     label?: string;
     name: string;
     value?: string | number | boolean;
+    disabled?: boolean;
 }>(), {
-    value: false
+    value: false,
+    disabled: false
 });
 
 </script>
@@ -45,6 +48,12 @@ withDefaults(defineProps<{
 
     input {
         display: none;
+
+        &:disabled + div {
+            cursor: not-allowed;
+            filter: brightness(0.8);
+            opacity: .7;
+        }
     }
 
     input + div {

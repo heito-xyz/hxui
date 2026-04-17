@@ -7,6 +7,7 @@
             :min="min"
             :max="max"
             :maxlength="max"
+            :disabled="disabled"
 
             @input="$emit('input', $event as any as InputEvent)"
             @change="$emit('change', $event as InputEvent)"
@@ -95,6 +96,12 @@ const validRegex = computed(() => {
         border-color: var(--hx-color-red);
     }
 
+    &:has(> input:disabled) {
+        cursor: not-allowed;
+        filter: brightness(0.8);
+        opacity: .7;
+    }
+
     input {
         padding: 0;
         width: 100%;
@@ -103,6 +110,10 @@ const validRegex = computed(() => {
         border: none;
         background-color: transparent;
         outline: none;
+
+        &:disabled {
+            cursor: not-allowed;
+        }
     }
 
     input::-webkit-outer-spin-button,

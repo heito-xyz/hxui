@@ -1,6 +1,6 @@
 {
   "name": "@heito/hxui",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Vue components for heito.xyz projects",
   "license": "ISC",
   "main": "./dist/index.umd.js",

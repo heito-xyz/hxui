@@ -3,7 +3,7 @@
 
     <Teleport to="body">
         <Transition :name="typeof transition === 'string' ? transition : transition?.name">
-            <div :class="['dialog', ...dialogSide]" v-show="isOpened"
+            <div :class="['dialog', ...dialogSide]" v-show="isOpenedDialog"
                 :style="{ '--gap-v': dialogPadding[0] + 'px', '--gap-h': dialogPadding[1] + 'px' }"
             >
                 <div class="background"
@@ -42,7 +42,7 @@
                     </Group>
 
                     <div class="buttons">
-                        <div @click="hide">
+                        <div @click="hide" v-if="closeOnClickOutside">
                             <X :size="16"/>
                         </div>
 
@@ -72,7 +72,7 @@ export interface DefaultSlotProps {
     show(event: MouseEvent): void;
     hide(): void;
     toggle(event: MouseEvent): void;
-    isOpened: boolean;
+    isOpened: boolean | null;
 }
 
 export interface DialogButton {
@@ -101,6 +101,7 @@ const $emit = defineEmits<{
 }>();
 
 const props = withDefaults(defineProps<{
+    open?: boolean;
     title?: string;
     description?: string;
     side?: Side | [Side, Align];
@@ -117,14 +118,20 @@ const props = withDefaults(defineProps<{
     buttons: () => []
 });
 
-const isOpened = ref<boolean>(false);
+const isOpened = ref<boolean | null>(null);
+
 
 const dialogSide = computed(() => typeof props.side === 'string' ? [props.side, 'center'] : props.side);
 const dialogPadding = computed(() => typeof props.collisionPadding === 'number' ? [props.collisionPadding, props.collisionPadding] : props.collisionPadding);
 
 const isShowedHeader = computed(() => {
     return Boolean(props.title) || Boolean(props.description) || Boolean($slots.title) || Boolean($slots.description);
-})
+});
+
+const isOpenedDialog = computed(() => {
+    return isOpened.value !== null ? isOpened.value : props.open;
+});
+
 
 let targetEvent: MouseEvent | null = null;
 
